@@ -32,15 +32,25 @@ async function run() {
     const ratingCollection = database.collection("rating");
 
     // GET API
+    // GET API
     app.get("/services", async (req, res) => {
-      let query = {};
-      const email = req.body.email;
-      if (email) {
-        query = { email: email };
-      }
-      const cursor = servicesCollection.find(query);
-      const services = await cursor.toArray();
-      res.json(services);
+      const cursors = servicesCollection.find({});
+      const result = await cursors.toArray();
+      res.send(result);
+    });
+
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await servicesCollection.findOne(query);
+      res.send(result);
+    });
+
+    app.delete("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await servicesCollection.deleteOne(query);
+      res.send(result);
     });
 
     //POST API
@@ -132,10 +142,10 @@ async function run() {
       res.send(result);
     });
     // manageOrders
-    app.get("/manageProducts", async (req, res) => {
+    /* app.get("/manageProducts", async (req, res) => {
       const result = await orderCollection.find({}).toArray();
       res.send(result);
-    });
+    }); */
     //myOrders
     app.get("/myOrders", async (req, res) => {
       const result = await orderCollection.find({}).toArray();
